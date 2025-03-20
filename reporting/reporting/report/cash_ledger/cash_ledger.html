@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Statement</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 30px;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 14px;
+            text-align: left;
+        }
+        th {
+            background-color: #f7f7f7;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .amount {
+            text-align: right;
+        }
+        .account-details {
+            margin-top: 20px;
+            background-color: #eef2f6;
+            padding: 12px 14px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            margin: 0;
+            color: #555;
+            font-weight: 600;
+        }
+        p {
+            margin: 6px 0;
+            color: #666;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 10px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h2>Account Statement</h2>
+            <p>Customer Code: {{ customer_code }}</p>
+            <p>Customer Name: {{ customer_name }}</p>
+        </div>
+        <div>
+            <p>Date Range: {{ from_date }} to {{ to_date }}</p>
+        </div>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Posting Date</th>
+                <th>Voucher Type</th>
+                <th>Voucher No</th>
+                <th class="amount">Debit (₹)</th>
+                <th class="amount">Credit (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Opening Balance</td>
+                <td></td>
+                <td></td>
+                <td class="amount">{{ '{:,.2f}'.format(opening_balance if opening_balance > 0 else 0.0) }}</td>
+                <td class="amount">{{ '{:,.2f}'.format(-opening_balance if opening_balance < 0 else 0.0) }}</td>
+            </tr>
+
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.posting_date }}</td>
+                <td>{{ entry.voucher_type }}</td>
+                <td>{{ entry.voucher_no }}</td>
+                <td class="amount">{{ '{:,.2f}'.format(entry.debit) }}</td>
+                <td class="amount">{{ '{:,.2f}'.format(entry.credit) }}</td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <td>Closing Balance</td>
+                <td></td>
+                <td></td>
+                <td class="amount">{{ '{:,.2f}'.format(closing_balance if closing_balance > 0 else 0.0) }}</td>
+                <td class="amount">{{ '{:,.2f}'.format(-closing_balance if closing_balance < 0 else 0.0) }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="account-details">
+        <p><strong>For your convenience, here are our payment details:</strong><br></p>
+        {{ virtual_account|replace("\n", "<br>")|safe }}
+    </div>
+
+    <footer>
+        <p>Generated on: {{ frappe.utils.now_datetime() }}</p>
+    </footer>
+
+</body>
+</html>
+<!-- <div class="text-center">
+    <h3>{{ _("Cash Ledger / Cash Book") }}</h3>
+    <p><strong>{{ filters.company }}</strong></p>
+    <p>{{ _("For the Period from ") }} {{ filters.from_date }} {{ _("to") }} {{ filters.to_date }}</p>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th colspan="4" class="text-center">{{ _("Receipts / Debit") }}</th>
+            <th colspan="4" class="text-center">{{ _("Payments / Credit") }}</th>
+        </tr>
+        <tr>
+            <th>{{ _("Date") }}</th>
+            <th>{{ _("Account Credited") }}</th>
+            <th>{{ _("Description") }}</th>
+            <th>{{ _("Rs.") }}</th>
+            <th>{{ _("Date") }}</th>
+            <th>{{ _("Account Debited") }}</th>
+            <th>{{ _("Description") }}</th>
+            <th>{{ _("Rs.") }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row.debit_date or '' }}</td>
+                <td>{{ row.debit_account or '' }}</td>
+                <td>{{ row.debit_description or '' }}</td>
+                <td class="text-right">{{ row.debit_amount or '' }}</td>
+                <td>{{ row.credit_date or '' }}</td>
+                <td>{{ row.credit_account or '' }}</td>
+                <td>{{ row.credit_description or '' }}</td>
+                <td class="text-right">{{ row.credit_amount or '' }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ -->
